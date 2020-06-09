@@ -1,11 +1,25 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-from models import Pessoa, Atividade
+from models import Pessoa, Atividade, Usuario
+from flask_httpauth import HTTPBasicAuth
 
+auth = HTTPBasicAuth()
 app = Flask(__name__)
 api = Api(app)
 
+# USUARIOS = {
+#     'admin':'123',
+#     'root':'321'
+# }
+
+@auth.verify_password
+def verifica(login, senha):
+    if not (login, senha):
+        return False
+    return Usuario.query.filter_by(login=login, senha=senha).first()
+
 class Pessoap(Resource):
+    @auth.login_required
     def get(self, nome):
         pessoa = Pessoa.query.filter_by(nome=nome).first()
         response = {
@@ -31,12 +45,13 @@ class Pessoap(Resource):
         return response
 
     def delete(self, nome):
-        pessoa = Pessoa.query.filter_by(nome=nome).firs()
+        pessoa = Pessoa.query.filter_by(nome=nome).first()
         mensagem = 'Registro de {} deletado'.format(pessoa.nome)
         pessoa.delete()
         return { 'status':'Sucesso', 'mensagem':mensagem}
 
 class ListaPessoas(Resource):
+    @auth.login_required
     def get(self):
         pessoas = Pessoa.query.all()
         response = [{'id':i.id, 'nome':i.nome, 'idade':i.idade} for i in pessoas]
@@ -54,6 +69,7 @@ class ListaPessoas(Resource):
         return response
 
 class ListaAtividades(Resource):
+    @auth.login_required
     def get(self):
         atividades = Atividade.query.all()
         response = [{'id':i.id, 'nome':i.nome, 'pessoa':i.pessoa.nome} for i in atividades]
