@@ -33,10 +33,10 @@ def exclui_usuario():
     usuario.delete()
 
 if __name__ == '__main__':
-    #insere_pessoa('Nethodu', '47')
-    #consulta_pessoa('Nethodu')
-    #altera_pessoa()
-    #exclui_pessoa()
-    #insere_usuario('fulano', '999')
-    #consulta_usuario()
-    #exclui_usuario()
+    # insere_pessoa('Nethodu', '47')
+     consulta_pessoa('Nethodu')
+    # altera_pessoa()
+    # exclui_pessoa()
+    # insere_usuario('fulano', '999')
+    # consulta_usuario()
+    # exclui_usuario()
